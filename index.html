@@ -71,7 +71,7 @@
 <div class="container">
   <h1>NO LIMITS AI</h1>
 
-  <input type="password" id="code" placeholder="Kod: 223" maxlength="3">
+  <input type="password" id="code" placeholder="Kod: ???" maxlength="3">
   <div style="text-align:center;">
     <button onclick="unlock()">ODBLOKUJ</button>
   </div>
@@ -110,13 +110,12 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // Wklej tutaj swój klucz API z dezgo.com (darmowy signup 30 s na https://dev.dezgo.com/)
-          // 'X-Dezgo-Key': 'twój-klucz-tutaj'   <-- usuń komentarze i wklej klucz
+          DEZGO-576CD45E0084115474B252712CECC6C0FF6777C80EDB90C6DAAD010CC684BC97BE1666ED
         },
         body: JSON.stringify({
           prompt: prompt,
           negative_prompt: "",
-          model: "flux",  // lub "pony" dla mocniejszego NSFW
+          model: "pony",  // lub "pony" dla mocniejszego NSFW
           width: 1024,
           height: 1024,
           steps: 30,
