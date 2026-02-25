@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NO LIMITS AI • VIDEO & IMAGE</title>
+  <title>NO LIMITS AI • INNY MODEL</title>
   <style>
     :root {
       --bg: #0d0015;
@@ -121,7 +121,7 @@
 
 <div class="container">
 
-  <h1>NO LIMITS AI • VIDEO</h1>
+  <h1>NO LIMITS AI • INNY MODEL</h1>
 
   <div id="lock-screen">
     <h2 style="margin-bottom:1.5rem; color:#cc88ff;">PODAJ KOD MODEMU</h2>
@@ -152,7 +152,7 @@
         <strong>Twój prompt (video):</strong> <span id="last-prompt-video"></span>
       </div>
       <video id="generated-video" controls autoplay loop muted></video>
-      <p style="margin-top:1rem; opacity:0.8;">Czas generowania: 10–60 sekund • odśwież stronę jeśli utknie</p>
+      <p style="margin-top:1rem; opacity:0.8;">Czas generowania: 10–90 sekund • odśwież stronę jeśli utknie</p>
     </div>
   </div>
 
@@ -183,12 +183,26 @@
     const container = document.getElementById("image-output");
     container.style.display = "block";
 
-    // Pollinations image (bardzo liberalny flux / inne modele)
-    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&enhance=true&model=flux`;
-    
-    const img = document.getElementById("generated-image");
-    img.src = url;
-    img.onload = () => img.scrollIntoView({behavior:"smooth"});
+    // Craiyon – darmowy, unlimited, bez klucza (najlepsza alternatywa dla pollinations w 2026)
+    // Dodajemy &v=3 dla nowszej wersji, negative prompt pusty
+    const encodedPrompt = encodeURIComponent(prompt);
+    const url = `https://backend.craiyon.com/generate?prompt=${encodedPrompt}&version=v3&negative_prompt=`;
+
+    // Craiyon zwraca JSON → pobieramy pierwszy obraz z listy
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.images && data.images.length > 0) {
+        const imgSrc = data.images[0];  // base64 lub url
+        const img = document.getElementById("generated-image");
+        img.src = imgSrc.startsWith('data:') ? imgSrc : `data:image/png;base64,${imgSrc}`;
+        img.onload = () => img.scrollIntoView({behavior:"smooth"});
+      } else {
+        alert("Brak obrazu – Craiyon mógł zablokować prompt lub chwilowy błąd.");
+      }
+    } catch (e) {
+      alert("Błąd połączenia z Craiyon. Spróbuj inny prompt lub za chwilę.");
+    }
   }
 
   async function generateVideo() {
@@ -199,9 +213,10 @@
     const container = document.getElementById("video-output");
     container.style.display = "block";
 
-    // Pollinations video – Seedance / inne (najbardziej dostępny w 2026 bez klucza)
-    // Możesz zmienić model=seedance na veo jeśli odblokują
-    const videoUrl = `https://gen.pollinations.ai/video/${encodeURIComponent(prompt)}?duration=8&model=seedance&width=768&height=768`;
+    // Upsampler – darmowy text-to-video / image-to-video, no signup, wan 2.2 itp.
+    // Uwaga: endpoint może się zmieniać – sprawdź aktualny na upsampler.com jeśli nie działa
+    const encoded = encodeURIComponent(prompt);
+    const videoUrl = `https://api.upsampler.com/v1/generate/video?prompt=${encoded}&model=wan-2.2-14b&duration=8&resolution=512`;
 
     const video = document.getElementById("generated-video");
     video.src = videoUrl;
@@ -211,14 +226,14 @@
       video.scrollIntoView({behavior:"smooth"});
     };
     video.onerror = () => {
-      alert("Błąd generowania wideo – pollinations może mieć chwilowy limit / błąd. Spróbuj za 30s albo zmień prompt.");
+      alert("Błąd generowania wideo (Upsampler limit / błąd). Spróbuj za chwilę lub inny prompt.");
     };
   }
 
   // Enter na polach
   document.getElementById("code").addEventListener("keypress", e => { if (e.key === "Enter") checkCode(); });
   document.getElementById("prompt").addEventListener("keypress", e => {
-    if (e.key === "Enter") generateImage(); // domyślnie obraz, video na przycisk
+    if (e.key === "Enter") generateImage(); // domyślnie zdjęcie
   });
 </script>
 
