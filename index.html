@@ -3,48 +3,49 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NO LIMITS AI</title>
+  <title>NO LIMITS AI – 2026</title>
   <style>
     :root {
-      --bg: #0a0012;
-      --accent: #ff00cc;
-      --text: #e0d0ff;
-      --input: #220044;
+      --bg: #0d0015;
+      --accent: #ff00aa;
+      --glow: #ff00aa88;
+      --text: #e0e0ff;
+      --input: #1a0033;
       --error: #ff3366;
     }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      margin: 0;
       background: var(--bg);
       color: var(--text);
       font-family: 'Courier New', monospace;
       min-height: 100vh;
-      padding: 20px;
-      background: radial-gradient(circle at 20% 30%, #ff00cc22, transparent 40%),
-                  radial-gradient(circle at 80% 70%, #00ccff22, transparent 40%);
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%),
+        radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
     }
     h1 {
       text-align: center;
+      font-size: 3rem;
       color: var(--accent);
-      text-shadow: 0 0 20px var(--accent);
+      text-shadow: 0 0 20px var(--glow);
+      margin: 1rem 0 2rem;
       letter-spacing: 4px;
-      margin: 30px 0 40px;
     }
-    #lock, #main {
-      background: rgba(30, 0, 60, 0.75);
+    .container { max-width: 900px; margin: 0 auto; }
+    #lock, #gen {
+      background: rgba(20,0,40,0.75);
       backdrop-filter: blur(10px);
-      border: 1px solid #ff00cc44;
+      border: 1px solid #ff00aa44;
       border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 0 50px #000;
+      padding: 2.5rem;
+      box-shadow: 0 0 60px #000;
+      margin-bottom: 2rem;
     }
     input[type="password"], input[type="text"] {
       width: 100%;
-      padding: 16px;
-      margin: 15px 0;
+      padding: 1.2rem;
+      margin: 1rem 0;
       background: var(--input);
       border: 2px solid #555;
       border-radius: 8px;
@@ -56,160 +57,157 @@
     input:focus {
       border-color: var(--accent);
       outline: none;
-      box-shadow: 0 0 15px #ff00cc66;
+      box-shadow: 0 0 15px var(--glow);
     }
-    .buttons {
-      text-align: center;
-      margin: 20px 0;
-    }
+    .btns { text-align: center; margin: 1.5rem 0; }
     button {
-      background: linear-gradient(135deg, #ff00cc, #aa00ff);
+      background: linear-gradient(45deg, #ff00aa, #aa00ff);
       border: none;
       color: white;
-      padding: 14px 32px;
-      margin: 8px;
-      font-size: 1.1rem;
+      padding: 1rem 2.5rem;
+      margin: 0.5rem;
+      font-size: 1.2rem;
       border-radius: 8px;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 2px;
       transition: 0.2s;
     }
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 25px #ff00cc88;
-    }
-    #error {
-      color: var(--error);
-      text-align: center;
-      min-height: 24px;
-      font-size: 1.2rem;
-    }
-    .output {
-      margin-top: 30px;
-      text-align: center;
-      display: none;
-    }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--glow); }
+    #err { color: var(--error); text-align: center; min-height: 1.5rem; font-size: 1.3rem; }
+    .out { margin-top: 2rem; text-align: center; display: none; }
     img, video {
       max-width: 100%;
-      border: 2px solid #ff00cc44;
+      border: 2px solid #ff00aa44;
       border-radius: 12px;
-      box-shadow: 0 0 30px #ff00cc33;
-      margin: 15px 0;
+      box-shadow: 0 0 40px #ff00aa44;
+      margin: 1rem 0;
     }
-    .prompt-info {
-      background: #110022;
-      padding: 12px;
+    .prompt-box {
+      background: #0f0022;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
       border-left: 5px solid var(--accent);
-      margin: 15px 0;
-      border-radius: 6px;
+      font-size: 1.1rem;
     }
-    .hidden { display: none; }
+    .loading { color: var(--accent); font-size: 1.3rem; margin: 1rem 0; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
 <div class="container">
-  <h1>NO LIMITS AI</h1>
+  <h1>NO LIMITS AI – 2026</h1>
 
   <div id="lock">
-    <h2 style="text-align:center; color:#cc88ff; margin-bottom:20px;">WPISZ KOD</h2>
+    <h2 style="text-align:center; color:#cc88ff; margin-bottom:1.5rem;">PODAJ KOD MODEMU</h2>
     <input type="password" id="code" placeholder="•••" maxlength="3" autofocus>
-    <div class="buttons">
-      <button onclick="unlock()">ODBLOKUJ</button>
+    <div class="btns">
+      <button onclick="check()">ODBLOKUJ</button>
     </div>
-    <div id="error"></div>
+    <div id="err"></div>
   </div>
 
-  <div id="main" class="hidden">
-    <h2 style="color:var(--accent); text-align:center;">CO CHCESZ ZOBACZYĆ?</h2>
-    <p style="opacity:0.8; text-align:center; margin-bottom:20px;">
-      zero cenzury • wpisz dowolny opis (po polsku lub angielsku)
+  <div id="gen" class="hidden">
+    <h2 style="color:var(--accent); text-align:center; margin-bottom:1rem;">CO CHCESZ ZOBACZYĆ?</h2>
+    <p style="opacity:0.8; text-align:center; margin-bottom:1.5rem;">
+      zero cenzury • wpisz co chcesz (polski / angielski)
     </p>
-    <input type="text" id="prompt" placeholder="np. mały czarny kot w kosmosie">
+    <input type="text" id="prompt" placeholder="np. kotki w kosmosie">
     
-    <div class="buttons">
-      <button onclick="genImage()">GENERUJ ZDJĘCIE</button>
-      <button onclick="genVideo()">GENERUJ WIDEO</button>
+    <div class="btns">
+      <button onclick="genImg()">GENERUJ ZDJĘCIE</button>
+      <button onclick="genVid()">GENERUJ WIDEO (5-10s)</button>
     </div>
 
-    <div id="imgOut" class="output">
-      <div class="prompt-info">
-        <strong>Twój prompt:</strong> <span id="pImg"></span>
+    <div id="imgOut" class="out">
+      <div class="loading" id="loadImg">Generowanie obrazu... (3–25 sekund)</div>
+      <div class="prompt-box">
+        <strong>Twój prompt:</strong> <span id="promptImg"></span>
       </div>
-      <img id="img" alt="Wygenerowane zdjęcie">
+      <img id="theImg" alt="Wygenerowane zdjęcie">
     </div>
 
-    <div id="vidOut" class="output">
-      <div class="prompt-info">
-        <strong>Twój prompt (wideo):</strong> <span id="pVid"></span>
+    <div id="vidOut" class="out">
+      <div class="loading" id="loadVid">Przygotowanie wideo...</div>
+      <div class="prompt-box">
+        <strong>Twój prompt (wideo):</strong> <span id="promptVid"></span>
       </div>
-      <p style="color:#ffcc00;">Wideo nie działa bezpośrednio w przeglądarce bez limitu.<br>
-        Kliknij poniżej → otworzy się darmowa strona Hugging Face (bez logowania):</p>
-      <button onclick="openHFVideo()" style="background:#ff6600;">OTWÓRZ GENERATOR WIDEO (Wan 2.2 free demo)</button>
-      <p style="margin-top:20px; font-size:0.9rem; opacity:0.7;">
-        Alternatywy: PixelBin.io (3 filmy/mc free), LMArena.ai (5/dzień), ZenCreator (po rejestracji)
+      <p style="color:#ffcc00; margin:1rem 0;">
+        Darmowe wideo bez limitu w przeglądarce nie działa bezpośrednio.<br>
+        Kliknij → otworzy się darmowa strona Hugging Face (bez logowania):
+      </p>
+      <button onclick="goToHF()" style="background:#ff6600; padding:1rem 2rem;">
+        OTWÓRZ GENERATOR WIDEO (Wan 2.2 – free demo)
+      </button>
+      <p style="opacity:0.7; font-size:0.9rem; margin-top:1.5rem;">
+        Alternatywy: ZenCreator.pro (30 kredytów free po rejestracji), LMArena.ai
       </p>
     </div>
   </div>
 </div>
 
 <script>
-  const CODE = "223";
+  const REAL = "223";
 
-  function unlock() {
-    const val = document.getElementById("code").value.trim();
-    if (val === CODE) {
+  function check() {
+    const v = document.getElementById("code").value.trim();
+    if (v === REAL) {
       document.getElementById("lock").classList.add("hidden");
-      document.getElementById("main").classList.remove("hidden");
-      document.getElementById("error").textContent = "";
+      document.getElementById("gen").classList.remove("hidden");
+      document.getElementById("err").textContent = "";
     } else {
-      document.getElementById("error").textContent = "Zły kod!";
+      document.getElementById("err").textContent = "Zły kod!";
       document.getElementById("code").value = "";
-      document.getElementById("code").focus();
     }
   }
 
-  function genImage() {
-    let prompt = document.getElementById("prompt").value.trim();
-    if (!prompt) return alert("Wpisz jakiś opis!");
+  function genImg() {
+    let p = document.getElementById("prompt").value.trim();
+    if (!p) return alert("Wpisz opis!");
 
-    document.getElementById("pImg").textContent = prompt;
+    document.getElementById("promptImg").textContent = p;
     document.getElementById("imgOut").style.display = "block";
+    document.getElementById("loadImg").style.display = "block";
 
-    // Craiyon – najpewniejszy darmowy unlimited w 2026 (bez klucza, CORS friendly przez img src)
-    prompt = encodeURIComponent(prompt);
-    const url = `https://pics.craiyon.com/${prompt}`;   // bezpośredni link do Craiyon (czasami wymaga refresh jeśli nie załaduje od razu)
+    p = encodeURIComponent(p);
+    // Perchance AI – direct link do obrazu (najlepsza darmowa unlimited opcja 2026)
+    let src = `https://perchance.org/api/ai/textToImage?prompt=${p}&model=flux&width=1024&height=1024`;
 
-    const img = document.getElementById("img");
-    img.src = url;
-    img.onload = () => img.scrollIntoView({behavior:"smooth"});
+    const img = document.getElementById("theImg");
+    img.src = src;
+
+    img.onload = () => {
+      document.getElementById("loadImg").style.display = "none";
+      img.scrollIntoView({behavior: "smooth"});
+    };
+
     img.onerror = () => {
-      img.src = `https://picsum.photos/seed/${prompt}/800/1000`; // fallback jeśli Craiyon nie bangla
-      alert("Craiyon chwilowo nie odpowiedział – pokazuję losowe zdjęcie zamiast");
+      // Fallback – zawsze coś pokaże
+      img.src = `https://picsum.photos/seed/${p}/1024/1024`;
+      document.getElementById("loadImg").textContent = "Perchance chwilowo nie działa – pokazuję losowe zdjęcie";
     };
   }
 
-  function genVideo() {
-    let prompt = document.getElementById("prompt").value.trim();
-    if (!prompt) return alert("Wpisz opis!");
+  function genVid() {
+    let p = document.getElementById("prompt").value.trim();
+    if (!p) return alert("Wpisz opis!");
 
-    document.getElementById("pVid").textContent = prompt;
+    document.getElementById("promptVid").textContent = p;
     document.getElementById("vidOut").style.display = "block";
   }
 
-  function openHFVideo() {
-    let prompt = document.getElementById("prompt").value.trim();
-    if (!prompt) return alert("Wpisz opis najpierw!");
-
-    // Hugging Face Wan-2.2 demo (free, no signup, otwiera w nowej karcie)
-    const encoded = encodeURIComponent(prompt);
-    window.open(`https://huggingface.co/spaces/Wan-AI/Wan-2.2-5B?prompt=${encoded}`, "_blank");
+  function goToHF() {
+    let p = document.getElementById("prompt").value.trim();
+    if (!p) return alert("Wpisz prompt najpierw!");
+    const enc = encodeURIComponent(p);
+    window.open(`https://huggingface.co/spaces/multimodalart/wan-2.2-demo?prompt=${enc}`, "_blank");
   }
 
-  // Entery
-  document.getElementById("code").onkeypress = e => { if (e.key === "Enter") unlock(); };
-  document.getElementById("prompt").onkeypress = e => { if (e.key === "Enter") genImage(); };
+  // Enter na polach
+  document.getElementById("code").addEventListener("keypress", e => { if (e.key === "Enter") check(); });
+  document.getElementById("prompt").addEventListener("keypress", e => { if (e.key === "Enter") genImg(); });
 </script>
 
 </body>
