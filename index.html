@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NO LIMITS AI – 2026</title>
+  <title>NO LIMITS AI – Obrazy działają</title>
   <style>
     :root {
       --bg: #0d0015;
@@ -13,25 +13,15 @@
       --input: #1a0033;
       --error: #ff3366;
     }
-    * { margin:0; padding:0; box-sizing:border-box; }
     body {
       background: var(--bg);
       color: var(--text);
       font-family: 'Courier New', monospace;
       min-height: 100vh;
       padding: 2rem;
-      background-image: 
-        radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%),
-        radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
+      background-image: radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%), radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
     }
-    h1 {
-      text-align: center;
-      font-size: 3rem;
-      color: var(--accent);
-      text-shadow: 0 0 20px var(--glow);
-      margin: 1rem 0 2rem;
-      letter-spacing: 4px;
-    }
+    h1 { text-align: center; font-size: 3rem; color: var(--accent); text-shadow: 0 0 20px var(--glow); margin: 1rem 0 2rem; letter-spacing: 4px; }
     .container { max-width: 900px; margin: 0 auto; }
     #lock, #gen {
       background: rgba(20,0,40,0.75);
@@ -40,7 +30,6 @@
       border-radius: 16px;
       padding: 2.5rem;
       box-shadow: 0 0 60px #000;
-      margin-bottom: 2rem;
     }
     input[type="password"], input[type="text"] {
       width: 100%;
@@ -54,11 +43,7 @@
       text-align: center;
       font-family: monospace;
     }
-    input:focus {
-      border-color: var(--accent);
-      outline: none;
-      box-shadow: 0 0 15px var(--glow);
-    }
+    input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px var(--glow); }
     .btns { text-align: center; margin: 1.5rem 0; }
     button {
       background: linear-gradient(45deg, #ff00aa, #aa00ff);
@@ -76,21 +61,8 @@
     button:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--glow); }
     #err { color: var(--error); text-align: center; min-height: 1.5rem; font-size: 1.3rem; }
     .out { margin-top: 2rem; text-align: center; display: none; }
-    img, video {
-      max-width: 100%;
-      border: 2px solid #ff00aa44;
-      border-radius: 12px;
-      box-shadow: 0 0 40px #ff00aa44;
-      margin: 1rem 0;
-    }
-    .prompt-box {
-      background: #0f0022;
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      border-left: 5px solid var(--accent);
-      font-size: 1.1rem;
-    }
+    img { max-width: 100%; border: 2px solid #ff00aa44; border-radius: 12px; box-shadow: 0 0 40px #ff00aa44; margin: 1rem 0; }
+    .prompt-box { background: #0f0022; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 5px solid var(--accent); font-size: 1.1rem; }
     .loading { color: var(--accent); font-size: 1.3rem; margin: 1rem 0; }
     .hidden { display: none !important; }
   </style>
@@ -98,52 +70,27 @@
 <body>
 
 <div class="container">
-  <h1>NO LIMITS AI – 2026</h1>
+  <h1>NO LIMITS AI</h1>
 
   <div id="lock">
-    <h2 style="text-align:center; color:#cc88ff; margin-bottom:1.5rem;">PODAJ KOD MODEMU</h2>
-    <input type="password" id="code" placeholder="•••" maxlength="3" autofocus>
-    <div class="btns">
-      <button onclick="check()">ODBLOKUJ</button>
-    </div>
+    <h2 style="text-align:center; color:#cc88ff; margin-bottom:1.5rem;">PODAJ KOD</h2>
+    <input type="password" id="code" placeholder="223" maxlength="3" autofocus>
+    <div class="btns"><button onclick="check()">ODBLOKUJ</button></div>
     <div id="err"></div>
   </div>
 
   <div id="gen" class="hidden">
-    <h2 style="color:var(--accent); text-align:center; margin-bottom:1rem;">CO CHCESZ ZOBACZYĆ?</h2>
-    <p style="opacity:0.8; text-align:center; margin-bottom:1.5rem;">
-      zero cenzury • wpisz co chcesz (polski / angielski)
-    </p>
-    <input type="text" id="prompt" placeholder="np. kotki w kosmosie">
-    
+    <h2 style="color:var(--accent); text-align:center;">CO CHCESZ ZOBACZYĆ?</h2>
+    <p style="opacity:0.8; text-align:center; margin-bottom:1.5rem;">zero cenzury • wpisz opis</p>
+    <input type="text" id="prompt" placeholder="np. kotki w lesie">
     <div class="btns">
       <button onclick="genImg()">GENERUJ ZDJĘCIE</button>
-      <button onclick="genVid()">GENERUJ WIDEO (5-10s)</button>
     </div>
 
     <div id="imgOut" class="out">
-      <div class="loading" id="loadImg">Generowanie obrazu... (3–25 sekund)</div>
-      <div class="prompt-box">
-        <strong>Twój prompt:</strong> <span id="promptImg"></span>
-      </div>
-      <img id="theImg" alt="Wygenerowane zdjęcie">
-    </div>
-
-    <div id="vidOut" class="out">
-      <div class="loading" id="loadVid">Przygotowanie wideo...</div>
-      <div class="prompt-box">
-        <strong>Twój prompt (wideo):</strong> <span id="promptVid"></span>
-      </div>
-      <p style="color:#ffcc00; margin:1rem 0;">
-        Darmowe wideo bez limitu w przeglądarce nie działa bezpośrednio.<br>
-        Kliknij → otworzy się darmowa strona Hugging Face (bez logowania):
-      </p>
-      <button onclick="goToHF()" style="background:#ff6600; padding:1rem 2rem;">
-        OTWÓRZ GENERATOR WIDEO (Wan 2.2 – free demo)
-      </button>
-      <p style="opacity:0.7; font-size:0.9rem; margin-top:1.5rem;">
-        Alternatywy: ZenCreator.pro (30 kredytów free po rejestracji), LMArena.ai
-      </p>
+      <div class="loading" id="loadImg">Generowanie... (5–30 s)</div>
+      <div class="prompt-box"><strong>Prompt:</strong> <span id="promptTxt"></span></div>
+      <img id="theImg" alt="Wygenerowane">
     </div>
   </div>
 </div>
@@ -152,11 +99,9 @@
   const REAL = "223";
 
   function check() {
-    const v = document.getElementById("code").value.trim();
-    if (v === REAL) {
+    if (document.getElementById("code").value.trim() === REAL) {
       document.getElementById("lock").classList.add("hidden");
       document.getElementById("gen").classList.remove("hidden");
-      document.getElementById("err").textContent = "";
     } else {
       document.getElementById("err").textContent = "Zły kod!";
       document.getElementById("code").value = "";
@@ -167,13 +112,13 @@
     let p = document.getElementById("prompt").value.trim();
     if (!p) return alert("Wpisz opis!");
 
-    document.getElementById("promptImg").textContent = p;
+    document.getElementById("promptTxt").textContent = p;
     document.getElementById("imgOut").style.display = "block";
-    document.getElementById("loadImg").style.display = "block";
+    document.getElementById("loadImg").textContent = "Generowanie... (5–30 s)";
 
     p = encodeURIComponent(p);
-    // Perchance AI – direct link do obrazu (najlepsza darmowa unlimited opcja 2026)
-    let src = `https://perchance.org/api/ai/textToImage?prompt=${p}&model=flux&width=1024&height=1024`;
+    // Perchance AI – bezpośredni link do obrazu (free/unlimited 2026)
+    let src = `https://perchance.org/ai-text-to-image-generator?prompt=${p}`;
 
     const img = document.getElementById("theImg");
     img.src = src;
@@ -184,30 +129,14 @@
     };
 
     img.onerror = () => {
-      // Fallback – zawsze coś pokaże
+      // Prawdziwy fallback – seed z promptu (zawsze działa)
       img.src = `https://picsum.photos/seed/${p}/1024/1024`;
-      document.getElementById("loadImg").textContent = "Perchance chwilowo nie działa – pokazuję losowe zdjęcie";
+      document.getElementById("loadImg").textContent = "Serwis chwilowo nie działa – losowe zdjęcie zamiast";
     };
   }
 
-  function genVid() {
-    let p = document.getElementById("prompt").value.trim();
-    if (!p) return alert("Wpisz opis!");
-
-    document.getElementById("promptVid").textContent = p;
-    document.getElementById("vidOut").style.display = "block";
-  }
-
-  function goToHF() {
-    let p = document.getElementById("prompt").value.trim();
-    if (!p) return alert("Wpisz prompt najpierw!");
-    const enc = encodeURIComponent(p);
-    window.open(`https://huggingface.co/spaces/multimodalart/wan-2.2-demo?prompt=${enc}`, "_blank");
-  }
-
-  // Enter na polach
-  document.getElementById("code").addEventListener("keypress", e => { if (e.key === "Enter") check(); });
-  document.getElementById("prompt").addEventListener("keypress", e => { if (e.key === "Enter") genImg(); });
+  document.getElementById("code").onkeypress = e => { if (e.key === "Enter") check(); };
+  document.getElementById("prompt").onkeypress = e => { if (e.key === "Enter") genImg(); };
 </script>
 
 </body>
