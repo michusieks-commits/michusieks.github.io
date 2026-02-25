@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NO LIMITS AI • VIDEO & IMAGE</title>
+  <style>
+    :root {
+      --bg: #0d0015;
+      --accent: #ff00aa;
+      --accent-glow: #ff00aa88;
+      --text: #e0e0ff;
+      --input-bg: #1a0033;
+      --error: #ff3366;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Courier New', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%),
+        radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow);
+      margin: 1.5rem 0 2.5rem;
+      letter-spacing: 6px;
+    }
+
+    .container { width: 100%; max-width: 900px; }
+
+    #lock-screen, #generator {
+      background: rgba(20, 0, 40, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid #ff00aa44;
+      border-radius: 12px;
+      padding: 2.5rem;
+      box-shadow: 0 0 60px #000000aa, inset 0 0 30px #ff00aa11;
+      margin-bottom: 2rem;
+    }
+
+    #lock-screen { text-align: center; }
+
+    input[type="password"], input[type="text"] {
+      width: 100%;
+      padding: 14px;
+      margin: 1rem 0;
+      background: var(--input-bg);
+      border: 2px solid #555588;
+      border-radius: 6px;
+      color: white;
+      font-size: 1.3rem;
+      font-family: monospace;
+      text-align: center;
+      letter-spacing: 4px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    button {
+      background: linear-gradient(45deg, #ff00aa, #aa00ff);
+      color: white;
+      border: none;
+      padding: 14px 40px;
+      font-size: 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 1.2rem .6rem;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    button:hover { transform: scale(1.05); box-shadow: 0 0 30px var(--accent-glow); }
+
+    #error { color: var(--error); font-size: 1.3rem; margin: 1rem 0; min-height: 1.8rem; }
+
+    .output-container {
+      margin-top: 2rem;
+      text-align: center;
+      display: none;
+    }
+
+    #generated-image, #generated-video {
+      max-width: 100%;
+      border: 2px solid #ff00aa44;
+      border-radius: 10px;
+      box-shadow: 0 0 40px #ff00aa44;
+      margin: 1.5rem 0;
+    }
+
+    video { width: 100%; max-height: 80vh; }
+
+    .prompt-display {
+      background: #0f0022;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      font-size: 1.1rem;
+      border-left: 4px solid var(--accent);
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>NO LIMITS AI • VIDEO</h1>
+
+  <div id="lock-screen">
+    <h2 style="margin-bottom:1.5rem; color:#cc88ff;">PODAJ KOD MODEMU</h2>
+    <input type="password" id="code" placeholder="••••" maxlength="3" autocomplete="off"/>
+    <button onclick="checkCode()">ODBLOKUJ</button>
+    <div id="error"></div>
+  </div>
+
+  <div id="generator" class="hidden">
+    <h2 style="color:var(--accent); margin-bottom:1.2rem;">CO CHCESZ ZOBACZYĆ?</h2>
+    <p style="opacity:0.7; margin-bottom:1rem;">zero cenzury • wpisz co chcesz (po polsku / angielsku)</p>
+    
+    <input type="text" id="prompt" placeholder="szczegółowy opis sceny / akcji / wyglądu..." />
+    <div style="text-align:center;">
+      <button onclick="generateImage()">GENERUJ ZDJĘCIE</button>
+      <button onclick="generateVideo()">GENERUJ WIDEO (5-10s)</button>
+    </div>
+
+    <div id="image-output" class="output-container">
+      <div class="prompt-display">
+        <strong>Twój prompt:</strong> <span id="last-prompt-img"></span>
+      </div>
+      <img id="generated-image" alt="Wygenerowane zdjęcie" />
+    </div>
+
+    <div id="video-output" class="output-container">
+      <div class="prompt-display">
+        <strong>Twój prompt (video):</strong> <span id="last-prompt-video"></span>
+      </div>
+      <video id="generated-video" controls autoplay loop muted></video>
+      <p style="margin-top:1rem; opacity:0.8;">Czas generowania: 10–60 sekund • odśwież stronę jeśli utknie</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const REAL_CODE = "223";
+
+  function checkCode() {
+    const input = document.getElementById("code").value.trim();
+    const error = document.getElementById("error");
+
+    if (input === REAL_CODE) {
+      document.getElementById("lock-screen").classList.add("hidden");
+      document.getElementById("generator").classList.remove("hidden");
+      error.textContent = "";
+    } else {
+      error.textContent = "Zły kod. Spróbuj jeszcze raz.";
+      document.getElementById("code").value = "";
+    }
+  }
+
+  async function generateImage() {
+    const prompt = document.getElementById("prompt").value.trim();
+    if (!prompt) return alert("Wpisz opis!");
+
+    document.getElementById("last-prompt-img").textContent = prompt;
+    const container = document.getElementById("image-output");
+    container.style.display = "block";
+
+    // Pollinations image (bardzo liberalny flux / inne modele)
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&nologo=true&enhance=true&model=flux`;
+    
+    const img = document.getElementById("generated-image");
+    img.src = url;
+    img.onload = () => img.scrollIntoView({behavior:"smooth"});
+  }
+
+  async function generateVideo() {
+    const prompt = document.getElementById("prompt").value.trim();
+    if (!prompt) return alert("Wpisz opis!");
+
+    document.getElementById("last-prompt-video").textContent = prompt;
+    const container = document.getElementById("video-output");
+    container.style.display = "block";
+
+    // Pollinations video – Seedance / inne (najbardziej dostępny w 2026 bez klucza)
+    // Możesz zmienić model=seedance na veo jeśli odblokują
+    const videoUrl = `https://gen.pollinations.ai/video/${encodeURIComponent(prompt)}?duration=8&model=seedance&width=768&height=768`;
+
+    const video = document.getElementById("generated-video");
+    video.src = videoUrl;
+    video.load();
+    video.onloadeddata = () => {
+      video.play().catch(()=>{});
+      video.scrollIntoView({behavior:"smooth"});
+    };
+    video.onerror = () => {
+      alert("Błąd generowania wideo – pollinations może mieć chwilowy limit / błąd. Spróbuj za 30s albo zmień prompt.");
+    };
+  }
+
+  // Enter na polach
+  document.getElementById("code").addEventListener("keypress", e => { if (e.key === "Enter") checkCode(); });
+  document.getElementById("prompt").addEventListener("keypress", e => {
+    if (e.key === "Enter") generateImage(); // domyślnie obraz, video na przycisk
+  });
+</script>
+
+</body>
+</html>
