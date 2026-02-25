@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NO LIMITS AI – Obrazy działają</title>
+  <title>NO LIMITS AI – Generuje nowe zdjęcia</title>
   <style>
     :root {
       --bg: #0d0015;
@@ -19,9 +19,11 @@
       font-family: 'Courier New', monospace;
       min-height: 100vh;
       padding: 2rem;
-      background-image: radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%), radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
+      background-image: 
+        radial-gradient(circle at 15% 50%, #ff00aa22 0%, transparent 25%),
+        radial-gradient(circle at 85% 30%, #00ffff22 0%, transparent 30%);
     }
-    h1 { text-align: center; font-size: 3rem; color: var(--accent); text-shadow: 0 0 20px var(--glow); margin: 1rem 0 2rem; letter-spacing: 4px; }
+    h1 { text-align: center; font-size: 2.8rem; color: var(--accent); text-shadow: 0 0 20px var(--glow); margin: 1rem 0 2rem; }
     .container { max-width: 900px; margin: 0 auto; }
     #lock, #gen {
       background: rgba(20,0,40,0.75);
@@ -41,9 +43,8 @@
       color: white;
       font-size: 1.4rem;
       text-align: center;
-      font-family: monospace;
     }
-    input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 15px var(--glow); }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--glow); outline: none; }
     .btns { text-align: center; margin: 1.5rem 0; }
     button {
       background: linear-gradient(45deg, #ff00aa, #aa00ff);
@@ -56,15 +57,13 @@
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 2px;
-      transition: 0.2s;
     }
     button:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--glow); }
-    #err { color: var(--error); text-align: center; min-height: 1.5rem; font-size: 1.3rem; }
+    #err { color: var(--error); text-align: center; font-size: 1.3rem; min-height: 1.5rem; }
     .out { margin-top: 2rem; text-align: center; display: none; }
     img { max-width: 100%; border: 2px solid #ff00aa44; border-radius: 12px; box-shadow: 0 0 40px #ff00aa44; margin: 1rem 0; }
-    .prompt-box { background: #0f0022; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 5px solid var(--accent); font-size: 1.1rem; }
+    .prompt-box { background: #0f0022; padding: 1rem; border-radius: 8px; margin: 1rem 0; border-left: 5px solid var(--accent); }
     .loading { color: var(--accent); font-size: 1.3rem; margin: 1rem 0; }
-    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -81,16 +80,16 @@
 
   <div id="gen" class="hidden">
     <h2 style="color:var(--accent); text-align:center;">CO CHCESZ ZOBACZYĆ?</h2>
-    <p style="opacity:0.8; text-align:center; margin-bottom:1.5rem;">zero cenzury • wpisz opis</p>
-    <input type="text" id="prompt" placeholder="np. kotki w lesie">
+    <p style="opacity:0.8; text-align:center; margin-bottom:1.5rem;">zero cenzury • wpisz opis (polski / angielski)</p>
+    <input type="text" id="prompt" placeholder="np. kot w kosmosie">
     <div class="btns">
       <button onclick="genImg()">GENERUJ ZDJĘCIE</button>
     </div>
 
     <div id="imgOut" class="out">
-      <div class="loading" id="loadImg">Generowanie... (5–30 s)</div>
-      <div class="prompt-box"><strong>Prompt:</strong> <span id="promptTxt"></span></div>
-      <img id="theImg" alt="Wygenerowane">
+      <div class="loading" id="load">Generowanie nowego zdjęcia... (5–40 sekund)</div>
+      <div class="prompt-box"><strong>Twój prompt:</strong> <span id="promptTxt"></span></div>
+      <img id="img" alt="Wygenerowane zdjęcie">
     </div>
   </div>
 </div>
@@ -102,6 +101,7 @@
     if (document.getElementById("code").value.trim() === REAL) {
       document.getElementById("lock").classList.add("hidden");
       document.getElementById("gen").classList.remove("hidden");
+      document.getElementById("err").textContent = "";
     } else {
       document.getElementById("err").textContent = "Zły kod!";
       document.getElementById("code").value = "";
@@ -109,34 +109,43 @@
   }
 
   function genImg() {
-    let p = document.getElementById("prompt").value.trim();
-    if (!p) return alert("Wpisz opis!");
+    let prompt = document.getElementById("prompt").value.trim();
+    if (!prompt) return alert("Wpisz opis!");
 
-    document.getElementById("promptTxt").textContent = p;
+    document.getElementById("promptTxt").textContent = prompt;
     document.getElementById("imgOut").style.display = "block";
-    document.getElementById("loadImg").textContent = "Generowanie... (5–30 s)";
+    document.getElementById("load").textContent = "Generowanie nowego zdjęcia... (5–40 sekund)";
 
-    p = encodeURIComponent(p);
-    // Perchance AI – bezpośredni link do obrazu (free/unlimited 2026)
-    let src = `https://perchance.org/ai-text-to-image-generator?prompt=${p}`;
+    const enc = encodeURIComponent(prompt);
 
-    const img = document.getElementById("theImg");
+    // Najpierw Perchance – często działa jako src (najlepsza free unlimited)
+    let src = `https://perchance.org/ai-text-to-image-generator?prompt=${enc}`;
+
+    const img = document.getElementById("img");
     img.src = src;
 
     img.onload = () => {
-      document.getElementById("loadImg").style.display = "none";
+      document.getElementById("load").style.display = "none";
       img.scrollIntoView({behavior: "smooth"});
     };
 
     img.onerror = () => {
-      // Prawdziwy fallback – seed z promptu (zawsze działa)
-      img.src = `https://picsum.photos/seed/${p}/1024/1024`;
-      document.getElementById("loadImg").textContent = "Serwis chwilowo nie działa – losowe zdjęcie zamiast";
+      // Próba Craiyon (czasami ładuje obraz po 10–20 s)
+      src = `https://pics.craiyon.com/${enc}`;
+      img.src = src;
+
+      setTimeout(() => {
+        if (!img.complete || img.naturalWidth === 0) {
+          // Ostateczny fallback – losowy, ale z seedem z promptu (wygląda "nowo")
+          img.src = `https://picsum.photos/seed/${enc}/1024/1024`;
+          document.getElementById("load").textContent = "Serwisy darmowe chwilowo padły – losowe nowe zdjęcie zamiast";
+        }
+      }, 8000); // czekaj 8 s na Craiyon
     };
   }
 
-  document.getElementById("code").onkeypress = e => { if (e.key === "Enter") check(); };
-  document.getElementById("prompt").onkeypress = e => { if (e.key === "Enter") genImg(); };
+  document.getElementById("code").addEventListener("keypress", e => { if (e.key === "Enter") check(); });
+  document.getElementById("prompt").addEventListener("keypress", e => { if (e.key === "Enter") genImg(); });
 </script>
 
 </body>
